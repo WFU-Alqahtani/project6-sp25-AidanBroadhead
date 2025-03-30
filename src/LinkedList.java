@@ -13,6 +13,15 @@ public class LinkedList {
         size = 0;
     }
 
+    // method to check if list is empty
+    public boolean isEmpty() {
+        if (head == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void shuffle(int shuffle_count) {
 
         Random rand = new Random();
@@ -28,26 +37,187 @@ public class LinkedList {
     // remove a card from a specific index
     public Card remove_from_index(int index) {
         // FIXME
+
+        if (head == null || index < 0) {
+            return null;
+        }
+
+        // remove first card and adjust list if index is 0
+        if (index == 0) {
+            Card removed = head.data;
+            head = head.next;
+            if (head == null) {
+                tail = null;
+            }
+            size = size - 1;
+            return removed;
+        }
+
+        Node prev = null;
+        Node curr = head;
+        int currIndex = 0;
+
+        // traverse list
+        while (curr != null && currIndex != index) {
+            prev = curr;
+            curr = curr.next;
+            currIndex = currIndex + 1;
+        }
+
+        // skip the node at the specified index
+        if (curr != null) {
+            prev.next = curr.next;
+            if (prev.next == null) {
+                tail = prev;
+            }
+            size = size - 1;
+            return curr.data;
+        }
+        return null;
+
     }
 
     // insert a card at a specific index
     public void insert_at_index(Card x, int index) {
         // FIXME
+
+        if (index < 0) {
+            return;
+        }
+
+        // creates new node
+        Node addedNode = new Node(x);
+
+        // if index is 0
+        if (index == 0) {
+            addedNode.next = head;
+            head = addedNode;
+            // if no tail
+            if (tail == null) {
+                tail = addedNode;
+            }
+            size = size + 1;
+            return;
+        }
+
+        Node prev = null;
+        Node curr = head;
+        int currIndex = 0;
+
+        // traverse list
+        while (curr != null && currIndex != index) {
+            prev = curr;
+            curr = curr.next;
+            currIndex = currIndex + 1;
+        }
+
+        // insert new node to list
+        if (curr != null) {
+            prev.next = addedNode;
+            addedNode.next = curr;
+            if (curr == tail) {
+                tail = addedNode;
+            }
+            size = size + 1;
+        } else if (currIndex == index) {
+            prev.next = addedNode;
+            tail = addedNode;
+            size = size + 1;
+        }
     }
 
     // swap two cards in the deck at the specific indices
     public void swap(int index1, int index2) {
         // FIXME
+        if (index1 < 0 || index2 < 0 || index1 == index2) {
+            return;
+        }
+
+        // finds nodes at each index
+        Node prev1 = null;
+        Node curr1 = head;
+        int i = 0;
+
+        // traverse list until given index
+        while (curr1 != null && i < index1) {
+            prev1 = curr1;
+            curr1 = curr1.next;
+            i++;
+        }
+
+        Node prev2 = null;
+        Node curr2 = head;
+        i = 0;
+
+        // traverse list until given index
+        while (curr2 != null && i < index2) {
+            prev2 = curr2;
+            curr2 = curr2.next;
+            i++;
+        }
+
+        // checks if nodes at each index are null
+        if (curr1 == null || curr2 == null) {
+            return;
+        }
+
+        // remove nodes
+        if (prev1 != null) {
+            prev1.next = curr2;
+        } else {
+            head = curr2;
+        }
+
+        if (prev2 != null) {
+            prev2.next = curr1;
+        } else {
+            head = curr1;
+        }
+
+        Node temp = curr1.next;
+        curr1.next = curr2.next;
+        curr2.next = temp;
+
     }
 
     // add card at the end of the list
     public void add_at_tail(Card data) {
         // FIXME
+
+        // create new node
+        Node addedNode = new Node(data);
+
+        // add node to list
+        if (head == null) {
+            head = addedNode;
+            tail = addedNode;
+        } else {
+            addedNode.prev = tail;
+            tail.next = addedNode;
+            tail = addedNode;
+        }
+        size = size + 1;
+
     }
 
     // remove a card from the beginning of the list
     public Card remove_from_head() {
         // FIXME
+
+        if (head == null) {
+            return null;
+        }
+
+        // remove card
+        Card removed = head.data;
+        head = head.next;
+        // update tail
+        if (head == null) {
+            tail = null;
+        }
+        size = size - 1;
+        return removed;
+
     }
 
     // check to make sure the linked list is implemented correctly by iterating forwards and backwards
